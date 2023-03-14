@@ -1,5 +1,6 @@
 package com.students.test_service.controller;
 
+import com.students.test_service.service.ModifyRequestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,10 +19,12 @@ import javax.validation.Valid;
 public class MyController {
 
     private final MyModifyService myModifyService;
-
+    private final ModifyRequestService modifyRequestService;
     @Autowired
-    public MyController(@Qualifier("ModifyErrorMessage") MyModifyService myModifyService) {
+    public MyController(@Qualifier("ModifySystemTime") MyModifyService myModifyService,
+                        ModifyRequestService modifyRequestService) {
         this.myModifyService = myModifyService;
+        this.modifyRequestService = modifyRequestService;
     }
 
     @PostMapping(value = "/feedback")
@@ -37,6 +40,8 @@ public class MyController {
                 .errorCode("")
                 .errorMessage("")
                 .build();
+
+        modifyRequestService.modifyRq(request);
 
         Response responseAfterModify = myModifyService.modify(response);
         log.info("Исходящий response : " + String.valueOf(response));
